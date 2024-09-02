@@ -11,55 +11,82 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     var controller = Get.put(PlayerController());
     return Scaffold(
-      backgroundColor: darkColor,
-      appBar:  AppBar(
-        actions: [
-          IconButton(onPressed: (){}, icon: Icon(Icons.search,color: bgColor,))
-        ],
-        leading: Icon(Icons.sort_rounded,color: bgColor,),
-        title: Text("Musics",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),centerTitle: true,
-      ),
-      body: FutureBuilder<List<SongModel>>(
-
-        future: controller.audioQuery.querySongs(
-        ignoreCase: true,
-        orderType: OrderType.ASC_OR_SMALLER,
-        sortType: null,
-        uriType: UriType.EXTERNAL
+        backgroundColor: darkColor,
+        appBar: AppBar(
+          actions: [
+            IconButton(
+                onPressed: () {},
+                icon: Icon(
+                  Icons.search,
+                  color: bgColor,
+                ))
+          ],
+          leading: Icon(
+            Icons.sort_rounded,
+            color: bgColor,
+          ),
+          title: Text(
+            "Musics",
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          centerTitle: true,
         ),
-        builder: (BuildContext context, snapshot){
-          if (snapshot.data == null){
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }else if(snapshot.data!.isEmpty){
-            return Center(child: Text("No Song Found"));
-          }else{
-            print(snapshot.data);
-            return Padding(
-              padding: EdgeInsets.all(5),
-              child: ListView.builder(
-                physics: BouncingScrollPhysics(),
-
-                itemCount: 100,
-                itemBuilder: (context, index) => Container(
-                  margin: EdgeInsets.only(bottom: 2),
-                  decoration: BoxDecoration(
-                    color: bgColor,
-                    borderRadius: BorderRadius.circular(12),
+        body: FutureBuilder<List<SongModel>>(
+          future: controller.audioQuery.querySongs(
+              ignoreCase: true,
+              orderType: OrderType.ASC_OR_SMALLER,
+              sortType: null,
+              uriType: UriType.EXTERNAL),
+          builder: (BuildContext context, snapshot) {
+            if (snapshot.data == null) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (snapshot.data!.isEmpty) {
+              return Center(child: Text("No Song Found"));
+            } else {
+              return Padding(
+                padding: EdgeInsets.all(5),
+                child: ListView.builder(
+                  physics: BouncingScrollPhysics(),
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (context, index) => Container(
+                    margin: EdgeInsets.only(bottom: 2),
+                    decoration: BoxDecoration(
+                      color: bgColor,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Obx(
+                      () =>  ListTile(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                        title: Text(
+                          "${snapshot.data![index].displayNameWOExt}",
+                          style: texStyle(),
+                        ),
+                        subtitle: Text(
+                          "${snapshot.data![index].artist}",
+                          style: TextStyle(fontSize: 12),
+                        ),
+                        leading: QueryArtworkWidget(
+                          id: snapshot.data![index].id,
+                          type: ArtworkType.AUDIO,
+                          nullArtworkWidget: Icon(Icons.music_note,size: 32,color: whiteColor,),
+                        ),
+                        trailing: controller.playIndex == index && controller.isPlaying.value ?Icon(
+                          Icons.play_arrow,
+                          color: whiteColor,
+                        ):null,
+                        onTap: (){
+                          controller.playSong(snapshot.data![index].uri,index);
+                        },
+                      ),
+                    ),
                   ),
-                  child: ListTile(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    title: Text("${snapshot.data![index].title}",style: texStyle(),),
-                    subtitle: Text("${snapshot.data![index].artist}",style: TextStyle(fontSize: 12),),
-                    leading: Icon(Icons.music_note,color: whiteColor,size: 32,),
-                    trailing: Icon(Icons.play_arrow,color: whiteColor,),
-                  ),
-                ),),
-            );
-          }
-        },
-      )
-    );
+                ),
+              );
+            }
+          },
+        ));
   }
 }
