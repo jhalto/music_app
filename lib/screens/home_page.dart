@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:music_app/common_widgets.dart';
 import 'package:music_app/controllers/player_controller.dart';
+import 'package:music_app/screens/player.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 class HomePage extends StatelessWidget {
@@ -43,7 +44,7 @@ class HomePage extends StatelessWidget {
                 child: CircularProgressIndicator(),
               );
             } else if (snapshot.data!.isEmpty) {
-              return Center(child: Text("No Song Found"));
+              return Center(child: Text("No Song Found",style: texStyle(),));
             } else {
               return Padding(
                 padding: EdgeInsets.all(5),
@@ -78,6 +79,7 @@ class HomePage extends StatelessWidget {
                           color: whiteColor,
                         ):null,
                         onTap: (){
+                          Get.to(()=> Player(data: snapshot.data!,));
                           controller.playSong(snapshot.data![index].uri,index);
                         },
                       ),

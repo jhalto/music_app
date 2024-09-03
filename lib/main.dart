@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:music_app/screens/home_page.dart';
+import 'package:music_app/screens/player.dart';
 import 'package:music_app/ui.dart';
 
 void main() {
