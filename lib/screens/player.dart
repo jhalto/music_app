@@ -85,9 +85,21 @@ class Player extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      IconButton(onPressed: (){
-                        controller.playSong(data[controller.playIndex.value-1].uri, controller.playIndex.value-1);
-                      }, icon: Icon(Icons.skip_previous_rounded,size: 40,)),
+                      IconButton(
+                        onPressed: () {
+                          int prevIndex = controller.playIndex.value - 1;
+                          if (prevIndex < 0) {
+                            prevIndex = data.length - 1;
+                          }
+                          controller.playSong(data[prevIndex].uri, prevIndex);
+                        },
+                        icon: const Icon(
+                          Icons.skip_previous_rounded,
+                          size: 48,
+                          color: darkColor
+                          ,
+                        ),
+                      ),
                       Obx(
                         () =>  IconButton(onPressed: (){
                           if(controller.isPlaying.value){
@@ -101,9 +113,20 @@ class Player extends StatelessWidget {
                         controller.isPlaying.value ?Icon(Icons.pause,size: 45,)
                         :Icon(Icons.play_arrow_rounded,size: 45,) ),
                       ),
-                      IconButton(onPressed: (){
-                        controller.playSong(data[controller.playIndex.value+1].uri, controller.playIndex.value+1);
-                      }, icon: Icon(Icons.skip_next_rounded,size: 40)),
+                      IconButton(
+                        onPressed: () {
+                          int nextIndex = controller.playIndex.value + 1;
+                          if (nextIndex >= data.length) {
+                            nextIndex = 0;
+                          }
+                          controller.playSong(data[nextIndex].uri, nextIndex);
+                        },
+                        icon: const Icon(
+                          Icons.skip_next_rounded,
+                          size: 40,
+                          color: darkColor,
+                        ),
+                      ),
                     ],
                   )
 
